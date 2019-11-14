@@ -1,0 +1,9 @@
+version: "1"
+ops:
+  - name: triage
+    description: Interactive command-line GitHub issue & notification triaging tool.
+    public: true
+    run: /triage
+    env:
+      - "GITHUB_TOKEN=$GITHUB_TOKEN"
+      - "TERM=$TERM"
