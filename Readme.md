@@ -14,6 +14,7 @@ $ GO111MODULE=on go get github.com/tj/triage/cmd/triage@master
 Via `ops run` by [CTO.ai](https://cto.ai/):
 
 ```
+$ npm install -g @cto.ai/ops && ops account:signup
 $ ops run @tj/triage
 ```
 
