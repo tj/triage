@@ -8,7 +8,7 @@ Interactive command-line GitHub issue & notification triaging tool.
 Via `go get`:
 
 ```
-$ go get github.com/tj/triage/...
+$ GO111MODULE=on go get github.com/tj/triage/cmd/triage@master
 ```
 
 Via `ops run` by [CTO.ai](https://cto.ai/):
