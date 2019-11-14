@@ -246,7 +246,11 @@ func viewNotification(ctx context.Context, m Model) string {
 	fmt.Fprintf(w, "\r\n")
 
 	// viewport
-	s := viewport(w.String(), m.NotificationScrollY, m.Height, 8)
+	offset := 7
+	if len(labels) > 0 {
+		offset = 8
+	}
+	s := viewport(w.String(), m.NotificationScrollY, m.Height, offset)
 
 	// menu
 	s = menu(s, m,
