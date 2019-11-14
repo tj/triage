@@ -1,8 +1,10 @@
+# For more info see https://cto.ai/docs/ops-reference
 version: "1"
 ops:
   - name: triage
     description: Interactive command-line GitHub issue & notification triaging tool.
     public: true
+    sourceCodeURL: "https://github.com/tj/triage"
     run: /triage
     env:
       - "GITHUB_TOKEN=$GITHUB_TOKEN"
