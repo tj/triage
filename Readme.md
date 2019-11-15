@@ -18,6 +18,16 @@ $ npm install -g @cto.ai/ops && ops account:signup
 $ ops run @tj/triage
 ```
 
+## Environment Variables
+
+#### GITHUB_TOKEN
+
+To access your Github activity, set your `GITHUB_TOKEN` environment variable to a [valid personal access token](https://github.com/settings/tokens):
+
+```
+export GITHUB_TOKEN=1234567c5560a274c59541e0787bf12345abcdef
+```
+
 ## Features
 
 Some of the current features include:
