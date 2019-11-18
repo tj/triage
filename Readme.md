@@ -3,6 +3,24 @@
 
 Interactive command-line GitHub issue & notification triaging tool.
 
+## Features
+
+Some of the current features include:
+
+- Quickly view and search notifications
+- View issue details, labels, and comments
+- View notifications without marking them as read
+- Mark notifications as read, or unsubscribe entirely
+- Unwatch entire repositories
+- Add and remove issue labels
+- Add comments to issues
+
+Upcoming features may include things like:
+
+- Global priority management across all of your projects
+- Automatically prioritize based on your GitHub sponsors
+- Templated comment responses
+
 ## Installation
 
 Via `go get`:
@@ -32,24 +50,6 @@ The following permissions are needed for all functionality to work:
 
 - `notifications` for listing and unsubscribing from notifications
 - `repo` for adding labels and comments
-
-## Features
-
-Some of the current features include:
-
-- Quickly view and search notifications
-- View issue details, labels, and comments
-- View notifications without marking them as read
-- Mark notifications as read, or unsubscribe entirely
-- Unwatch entire repositories
-- Add and remove issue labels
-- Add comments to issues
-
-Upcoming features may include things like:
-
-- Global priority management across all of your projects
-- Automatically prioritize based on your GitHub sponsors
-- Templated comment responses
 
 ## Screenshots
 
