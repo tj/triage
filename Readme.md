@@ -28,6 +28,11 @@ To access your Github activity, set your `GITHUB_TOKEN` environment variable to 
 export GITHUB_TOKEN=1234567c5560a274c59541e0787bf12345abcdef
 ```
 
+The following permissions are needed for all functionality to work:
+
+- `notifications` for listing and unsubscribing from notifications
+- `repo` for adding labels and comments
+
 ## Features
 
 Some of the current features include:
