@@ -18,6 +18,7 @@ import (
 	"github.com/tj/go-tea"
 	"github.com/tj/go-tea/option"
 	"github.com/tj/go-tea/options"
+	"github.com/tj/go-tea/shortcut"
 	"github.com/tj/go-termd"
 
 	"github.com/tj/triage/internal/colors"
@@ -149,18 +150,18 @@ func viewNotifications(ctx context.Context, m Model) string {
 	// menu
 	if m.Searching {
 		s = menu(s, m,
-			key{"Esc", "Abort"},
-			key{"Enter", "Save"})
+			shortcut.Key{"Esc", "Abort"},
+			shortcut.Key{"Enter", "Save"})
 	} else {
 		s = menu(s, m,
-			key{"q", "Quit"},
-			key{"→", "View"},
-			key{"↑↓", "Scroll"},
-			key{"r", "Mark read"},
-			key{"u", "Unsubscribe"},
-			key{"U", "Unwatch"},
-			key{"R", "Refresh"},
-			key{"/", "Search"})
+			shortcut.Key{"q", "Quit"},
+			shortcut.Key{"→", "View"},
+			shortcut.Key{"↑↓", "Scroll"},
+			shortcut.Key{"r", "Mark read"},
+			shortcut.Key{"u", "Unsubscribe"},
+			shortcut.Key{"U", "Unwatch"},
+			shortcut.Key{"R", "Refresh"},
+			shortcut.Key{"/", "Search"})
 	}
 
 	return s
@@ -256,16 +257,16 @@ func viewNotification(ctx context.Context, m Model) string {
 
 	// menu
 	s = menu(s, m,
-		key{"q", "Quit"},
-		key{"←", "Back"},
-		key{"↑↓", "Scroll"},
-		key{"r", "Mark read"},
-		key{"u", "Unsubscribe"},
-		key{"c", "Comment"},
-		key{"l", "Labels"},
-		key{"p", "Priority"},
-		key{"o", "Open"},
-		key{"R", "Refresh"})
+		shortcut.Key{"q", "Quit"},
+		shortcut.Key{"←", "Back"},
+		shortcut.Key{"↑↓", "Scroll"},
+		shortcut.Key{"r", "Mark read"},
+		shortcut.Key{"u", "Unsubscribe"},
+		shortcut.Key{"c", "Comment"},
+		shortcut.Key{"l", "Labels"},
+		shortcut.Key{"p", "Priority"},
+		shortcut.Key{"o", "Open"},
+		shortcut.Key{"R", "Refresh"})
 
 	return s
 }
@@ -286,9 +287,9 @@ func viewLabels(ctx context.Context, m Model) string {
 	fmt.Fprintf(w, "%s", options.View(m.LabelOptions))
 
 	return menu(w.String(), m,
-		key{"Esc", "Abort"},
-		key{"Space", "Toggle"},
-		key{"Enter", "Save"})
+		shortcut.Key{"Esc", "Abort"},
+		shortcut.Key{"Space", "Toggle"},
+		shortcut.Key{"Enter", "Save"})
 }
 
 // viewPriorities page.
@@ -302,9 +303,9 @@ func viewPriorities(ctx context.Context, m Model) string {
 	fmt.Fprintf(w, "%s", option.View(m.PriorityOptions))
 
 	return menu(w.String(), m,
-		key{"Esc", "Abort"},
-		key{"Space", "Toggle"},
-		key{"Enter", "Save"})
+		shortcut.Key{"Esc", "Abort"},
+		shortcut.Key{"Space", "Toggle"},
+		shortcut.Key{"Enter", "Save"})
 }
 
 // viewComment page.
@@ -318,8 +319,8 @@ func viewComment(ctx context.Context, m Model) string {
 	fmt.Fprintf(w, "  %s", input.View(m.CommentInput))
 
 	return menu(w.String(), m,
-		key{"Esc", "Abort"},
-		key{"Enter", "Save"})
+		shortcut.Key{"Esc", "Abort"},
+		shortcut.Key{"Enter", "Save"})
 }
 
 // loading indicator.
@@ -338,7 +339,7 @@ func centered(m Model, s string) string {
 }
 
 // menu view.
-func menu(s string, m Model, keys ...key) string {
+func menu(s string, m Model, keys ...shortcut.Key) string {
 	// TODO: refactor this stuff using a nicer box model
 	if m.Height == 0 {
 		return ""
@@ -348,16 +349,8 @@ func menu(s string, m Model, keys ...key) string {
 		lines = append(lines, "")
 	}
 	lines[len(lines)-2] = strings.Repeat(" ", m.Width)
-	lines[len(lines)-1] = shortcuts(keys)
+	lines[len(lines)-1] = shortcut.View(shortcut.Model{keys})
 	return strings.Join(lines, "\r\n")
-}
-
-// shortcuts view.
-func shortcuts(keys []key) (s string) {
-	for _, k := range keys {
-		s += fmt.Sprintf("[%s] %s ", k.Key, k.Help)
-	}
-	return
 }
 
 // viewport returns a view into the lines of text, providing
