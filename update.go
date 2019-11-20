@@ -4,6 +4,7 @@ import (
 	"context"
 
 	"github.com/tj/go-tea/input"
+	"github.com/tj/go-tea/option"
 
 	"github.com/google/go-github/v28/github"
 	"github.com/tj/go-tea"
@@ -22,6 +23,9 @@ type GotDimensions struct {
 
 // NotificationLabelsUpdated msg.
 type NotificationLabelsUpdated struct{}
+
+// NotificationPriorityUpdated msg.
+type NotificationPriorityUpdated struct{}
 
 // CommentAdded msg.
 type CommentAdded struct{}
@@ -70,6 +74,7 @@ type Unwatched struct {
 // Update function.
 func Update(ctx context.Context, msg tea.Msg, model tea.Model) (tea.Model, tea.Cmd) {
 	m := model.(Model)
+	config := MustConfigFromContext(ctx)
 
 	// filter so that selection calculations
 	// take the search text into account
@@ -107,7 +112,7 @@ func Update(ctx context.Context, msg tea.Msg, model tea.Model) (tea.Model, tea.C
 	if m.Page == PageLabels {
 		switch msg := msg.(type) {
 		case LabelsLoaded:
-			m.RepoLabels = msg.Labels
+			m.RepoLabels = filterPriorityLabels(msg.Labels, config.Priorities)
 			m.Loading = false
 			return m, LoadNotificationLabels(m.Notification, m.Issue)
 		case NotificationLabelsLoaded:
@@ -133,6 +138,30 @@ func Update(ctx context.Context, msg tea.Msg, model tea.Model) (tea.Model, tea.C
 				return m, nil
 			default:
 				m.LabelOptions = options.Update(msg, m.LabelOptions)
+				return m, nil
+			}
+		}
+	}
+
+	// priorities
+	if m.Page == PagePriorities {
+		switch msg := msg.(type) {
+		case NotificationPriorityUpdated:
+			m.Page = PageNotification
+			m.LoadingLabels = true
+			return m, LoadNotificationLabels(m.Notification, m.Issue)
+		case *terminput.KeyboardInput:
+			switch msg.Key() {
+			case terminput.KeyEnter:
+				m.Page = PageNotification
+				name := m.PriorityOptions.Value()
+				return m, UpdateNotificationPriority(m.Notification, m.Issue, name)
+			case terminput.KeyEscape:
+				m.LabelOptions = options.Model{}
+				m.Page = PageNotification
+				return m, nil
+			default:
+				m.PriorityOptions = option.Update(msg, m.PriorityOptions)
 				return m, nil
 			}
 		}
@@ -198,6 +227,14 @@ func Update(ctx context.Context, msg tea.Msg, model tea.Model) (tea.Model, tea.C
 					m.Loading = true
 					m.LoadingLabels = true
 					return m, LoadRepoLabels(m.Notification)
+				case 'p':
+					var o option.Model
+					m.Page = PagePriorities
+					for _, p := range config.Priorities {
+						o.Options = append(o.Options, p.Name)
+					}
+					m.PriorityOptions = o
+					return m, nil
 				case 'c':
 					m.Page = PageComment
 					return m, nil
@@ -429,4 +466,19 @@ func getNotificationIndex(notifications []*github.Notification, id string) int {
 		}
 	}
 	return index
+}
+
+// filterPriorityLabels returns priorities filtered from labels.
+func filterPriorityLabels(labels []*github.Label, priorities []Priority) (filtered []*github.Label) {
+loop:
+	for _, l := range labels {
+		for _, p := range priorities {
+			if l.GetName() == p.Label {
+				continue loop
+			}
+		}
+
+		filtered = append(filtered, l)
+	}
+	return
 }

@@ -73,6 +73,8 @@ github.com/tj/go-css v0.0.0-20191108133013-220a796d1705 h1:+UA89aFRjPMqdccHd9A0H
 github.com/tj/go-css v0.0.0-20191108133013-220a796d1705/go.mod h1:e+JPLQ9wyQCgRnPenX2bo7MJoLphBHz5c1WUqaANSeA=
 github.com/tj/go-tea v0.0.1 h1:DbdiXMxeKx9KQexWraQEXNzrbFYy5G4QtBAuRKpZwKo=
 github.com/tj/go-tea v0.0.1/go.mod h1:ZDjJZT0k1RPQpWtAKhXjynmOilgfmxOyimoz/p3g384=
+github.com/tj/go-tea v0.1.0 h1:Cx+PUxaiOG4p1yv6gecKhuPZpOEoxx33KXkYXVC83pc=
+github.com/tj/go-tea v0.1.0/go.mod h1:ZDjJZT0k1RPQpWtAKhXjynmOilgfmxOyimoz/p3g384=
 github.com/tj/go-termd v0.0.1 h1:NRrUrpzPj3jVlimGNMdnNOry0vYgvEkMJcJWZkKAeZI=
 github.com/tj/go-termd v0.0.1/go.mod h1:qf28T7t3aasdTnAz6ehff7dfebsK+lAKK53duclZ/yQ=
 github.com/tj/go-terminput v1.0.0 h1:X928u7ohxr7Dfzlxppvc5Zql5Lwd1bOH5VyIL2RPrFw=
@@ -88,6 +90,7 @@ golang.org/x/oauth2 v0.0.0-20180821212333-d2e6202438be/go.mod h1:N/0e6XlmueqKjAG
 golang.org/x/sync v0.0.0-20190227155943-e225da77a7e6/go.mod h1:RxMgew5VJxzue5/jJTE5uejpjVlOe/izrB70Jof72aM=
 golang.org/x/sys v0.0.0-20181128092732-4ed8d59d0b35/go.mod h1:STP8DvDyc/dI5b8T5hshtkjS+E42TnysNCUPdjciGhY=
 golang.org/x/sys v0.0.0-20190215142949-d0b11bdaac8a/go.mod h1:STP8DvDyc/dI5b8T5hshtkjS+E42TnysNCUPdjciGhY=
+golang.org/x/sys v0.0.0-20190626150813-e07cf5db2756 h1:9nuHUbU8dRnRRfj9KjWUVrJeoexdbeMjttk6Oh1rD10=
 golang.org/x/sys v0.0.0-20190626150813-e07cf5db2756/go.mod h1:h1NjWce9XRLGQEsW7wpKNCjG9DtNlClVuFLEZdDNbEs=
 golang.org/x/text v0.3.0/go.mod h1:NqM8EUOU14njkJ3fqMW+pc6Ldnwhi/IjpwHt7yyuwOQ=
 golang.org/x/tools v0.0.0-20190328211700-ab21143f2384/go.mod h1:LCzVGOaR6xXOjkQ3onu1FJEFr0SW1gC7cKk1uF8kGRs=

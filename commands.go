@@ -2,8 +2,10 @@ package triage
 
 import (
 	"context"
+	"fmt"
 	"os"
 	"os/signal"
+	"strings"
 	"syscall"
 	"time"
 
@@ -161,6 +163,60 @@ func UpdateNotificationLabels(n *github.Notification, issue *github.Issue, label
 	}
 }
 
+// UpdateNotificationPriority updates an issue's priority by name.
+func UpdateNotificationPriority(n *github.Notification, issue *github.Issue, name string) tea.Cmd {
+	return func(ctx context.Context) tea.Msg {
+		gh := MustClientFromContext(ctx)
+		config := MustConfigFromContext(ctx)
+
+		ctx, cancel := context.WithTimeout(ctx, time.Second*5)
+		defer cancel()
+
+		owner, repo := ownerRepo(n)
+
+		// find label
+		var priority Priority
+		for _, p := range config.Priorities {
+			if p.Name == name {
+				priority = p
+				break
+			}
+		}
+
+		// strip leading # from the color
+		color := strings.Replace(priority.Color, "#", "", 1)
+
+		// create the label
+		desc := fmt.Sprintf("%s priority issue.", priority.Name)
+		_, _, err := gh.Issues.CreateLabel(ctx, owner, repo, &github.Label{
+			Name:        &priority.Label,
+			Color:       &color,
+			Description: &desc,
+		})
+
+		// ignore error if it already exists
+		if err != nil && !isAlreadyExists(err) {
+			return fmt.Errorf("creating priority label: %w", err)
+		}
+
+		// remove any priority labels
+		for _, p := range config.Priorities {
+			_, err := gh.Issues.RemoveLabelForIssue(ctx, owner, repo, issue.GetNumber(), p.Label)
+			if err != nil && !isNotFound(err) {
+				return fmt.Errorf("error removing label %q: %w", p.Label, err)
+			}
+		}
+
+		// assign the label
+		_, _, err = gh.Issues.AddLabelsToIssue(ctx, owner, repo, issue.GetNumber(), []string{priority.Label})
+		if err != nil {
+			return fmt.Errorf("assigning priority label: %w", err)
+		}
+
+		return NotificationPriorityUpdated{}
+	}
+}
+
 // AddComment adds a comment to an issue.
 func AddComment(n *github.Notification, issue *github.Issue, comment string) tea.Cmd {
 	return func(ctx context.Context) tea.Msg {
@@ -301,4 +357,30 @@ func getIssueComments(ctx context.Context, issue *github.Issue) (v []*github.Iss
 
 	_, err = gh.Do(ctx, req, &v)
 	return
+}
+
+// isNotFound returns true the error is a 404.
+func isNotFound(err error) bool {
+	res, ok := err.(*github.ErrorResponse)
+	if !ok {
+		return false
+	}
+
+	return res.Response.StatusCode == 404
+}
+
+// isAlreadyExists returns true is already_exists.
+func isAlreadyExists(err error) bool {
+	res, ok := err.(*github.ErrorResponse)
+	if !ok {
+		return false
+	}
+
+	for _, e := range res.Errors {
+		if e.Code == "already_exists" {
+			return true
+		}
+	}
+
+	return false
 }

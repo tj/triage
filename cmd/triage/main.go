@@ -14,6 +14,25 @@ import (
 	"github.com/tj/triage"
 )
 
+// defaultPriorities is a set of default user priorities.
+var defaultPriorities = []triage.Priority{
+	{
+		Name:  "Low",
+		Label: "Priority: Low",
+		Color: "#532BE3",
+	},
+	{
+		Name:  "Medium",
+		Label: "Priority: Medium",
+		Color: "#532BE3",
+	},
+	{
+		Name:  "High",
+		Label: "Priority: High",
+		Color: "#532BE3",
+	},
+}
+
 func main() {
 	ctx := context.Background()
 
@@ -40,6 +59,11 @@ func main() {
 		log.Fatalf("error loading config: %s", err)
 	}
 	ctx = triage.NewConfigContext(ctx, &c)
+
+	// defaults
+	if c.Priorities == nil {
+		c.Priorities = defaultPriorities
+	}
 
 	// start program
 	program := tea.NewProgram(triage.Init, triage.Update, triage.View)

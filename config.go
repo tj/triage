@@ -6,9 +6,27 @@ import (
 	"github.com/tj/go-termd"
 )
 
-// Config .
+// Priority is user configurable priority name and label.
+type Priority struct {
+	// Name of the priority.
+	Name string `json:"name"`
+
+	// Label is the GitHub label name.
+	Label string `json:"label"`
+
+	// Color is the GitHub label color, for example "#532BE3".
+	Color string `json:"color"`
+}
+
+// Config is the user configuration.
 type Config struct {
+	// Priorities is a set of priorities used in assigning. By default
+	// low, medium, and high are provided.
+	Priorities []Priority
+
+	// Theme is style related configuration.
 	Theme struct {
+		// Code is the syntax theme used for highlighting blocks of code.
 		Code *termd.SyntaxTheme `json:"code"`
 	} `json:"theme"`
 }

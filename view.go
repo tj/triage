@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"context"
 	"fmt"
+	"io"
 	"sort"
 	"strings"
 
@@ -15,6 +16,7 @@ import (
 	"github.com/kyokomi/emoji"
 	"github.com/tj/go-css/csshex"
 	"github.com/tj/go-tea"
+	"github.com/tj/go-tea/option"
 	"github.com/tj/go-tea/options"
 	"github.com/tj/go-termd"
 
@@ -57,6 +59,8 @@ func View(ctx context.Context, model tea.Model) string {
 		return viewComment(ctx, m)
 	case PageLabels:
 		return viewLabels(ctx, m)
+	case PagePriorities:
+		return viewPriorities(ctx, m)
 	default:
 		panic("unhandled page")
 	}
@@ -77,8 +81,7 @@ func viewNotifications(ctx context.Context, m Model) string {
 	}
 
 	// padding
-	fmt.Fprintf(w, "\r\n")
-	defer fmt.Fprintf(w, "\r\n")
+	defer padding(w)()
 
 	// search focused
 	if m.Searching {
@@ -176,8 +179,7 @@ func viewNotification(ctx context.Context, m Model) string {
 	comments := m.Comments
 
 	// padding
-	fmt.Fprintf(w, "\r\n")
-	defer fmt.Fprintf(w, "\r\n")
+	defer padding(w)()
 
 	// header
 	fmt.Fprintf(w, "    %s\r\n", colors.Bold(n.Repository.GetFullName()))
@@ -261,6 +263,7 @@ func viewNotification(ctx context.Context, m Model) string {
 		key{"u", "Unsubscribe"},
 		key{"c", "Comment"},
 		key{"l", "Labels"},
+		key{"p", "Priority"},
 		key{"o", "Open"},
 		key{"R", "Refresh"})
 
@@ -277,11 +280,26 @@ func viewLabels(ctx context.Context, m Model) string {
 	}
 
 	// padding
-	fmt.Fprintf(w, "\r\n")
-	defer fmt.Fprintf(w, "\r\n")
+	defer padding(w)()
 
 	fmt.Fprintf(w, "  Press space to select labels:\r\n\r\n")
 	fmt.Fprintf(w, "%s", options.View(m.LabelOptions))
+
+	return menu(w.String(), m,
+		key{"Esc", "Abort"},
+		key{"Space", "Toggle"},
+		key{"Enter", "Save"})
+}
+
+// viewPriorities page.
+func viewPriorities(ctx context.Context, m Model) string {
+	w := new(bytes.Buffer)
+
+	// padding
+	defer padding(w)()
+
+	fmt.Fprintf(w, "  Select a priority:\r\n\r\n")
+	fmt.Fprintf(w, "%s", option.View(m.PriorityOptions))
 
 	return menu(w.String(), m,
 		key{"Esc", "Abort"},
@@ -294,8 +312,7 @@ func viewComment(ctx context.Context, m Model) string {
 	w := new(bytes.Buffer)
 
 	// padding
-	fmt.Fprintf(w, "\r\n")
-	defer fmt.Fprintf(w, "\r\n")
+	defer padding(w)()
 
 	fmt.Fprintf(w, "  Press enter to save your comment:\r\n\r\n")
 	fmt.Fprintf(w, "  %s", input.View(m.CommentInput))
@@ -320,7 +337,7 @@ func centered(m Model, s string) string {
 	return y + x + s
 }
 
-// menu .
+// menu view.
 func menu(s string, m Model, keys ...key) string {
 	// TODO: refactor this stuff using a nicer box model
 	if m.Height == 0 {
@@ -335,7 +352,7 @@ func menu(s string, m Model, keys ...key) string {
 	return strings.Join(lines, "\r\n")
 }
 
-// shortcuts .
+// shortcuts view.
 func shortcuts(keys []key) (s string) {
 	for _, k := range keys {
 		s += fmt.Sprintf("[%s] %s ", k.Key, k.Help)
@@ -389,6 +406,14 @@ func markdownText(s string, theme *termd.SyntaxTheme) string {
 	s = strings.Replace(s, "\n", "\r\n", -1)
 	s = emoji.Sprintf("%s", s)
 	return s
+}
+
+// padding util.
+func padding(w io.Writer) func() {
+	fmt.Fprintf(w, "\r\n")
+	return func() {
+		fmt.Fprintf(w, "\r\n")
+	}
 }
 
 // hr is a horizontal rule.

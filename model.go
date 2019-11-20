@@ -6,6 +6,7 @@ import (
 	"github.com/google/go-github/v28/github"
 	"github.com/tj/go-tea"
 	"github.com/tj/go-tea/input"
+	"github.com/tj/go-tea/option"
 	"github.com/tj/go-tea/options"
 )
 
@@ -18,6 +19,7 @@ const (
 	PageNotification
 	PageLabels
 	PageComment
+	PagePriorities
 )
 
 // Model is the application model.
@@ -41,6 +43,9 @@ type Model struct {
 	LoadingIssue        bool
 	LoadingLabels       bool
 	LoadingComments     bool
+
+	// priorities page
+	PriorityOptions option.Model
 
 	// labels page
 	LabelOptions options.Model
