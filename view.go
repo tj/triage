@@ -188,7 +188,7 @@ func viewNotification(ctx context.Context, m Model) string {
 	if issue == nil {
 		fmt.Fprintf(w, "\r\n")
 	} else {
-		fmt.Fprintf(w, "    Opened %s by @%s\r\n", humanize.Time(issue.GetCreatedAt()), issue.GetUser().GetLogin())
+		fmt.Fprintf(w, "    #%d opened %s by @%s\r\n", issue.GetNumber(), humanize.Time(issue.GetCreatedAt()), issue.GetUser().GetLogin())
 	}
 
 	// pending
