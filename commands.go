@@ -53,7 +53,7 @@ func LoadNotifications(ctx context.Context) tea.Msg {
 	// fetch
 	notifications, _, err := gh.Activity.ListNotifications(ctx, options)
 	if err != nil {
-		return err
+		return fmt.Errorf("fetching notifications: %w", err)
 	}
 
 	// filter
@@ -82,7 +82,7 @@ func LoadNotificationIssue(n *github.Notification) tea.Cmd {
 
 		issue, err := getIssue(ctx, n)
 		if err != nil {
-			return err
+			return fmt.Errorf("fetching issue: %w", err)
 		}
 
 		return NotificationIssueLoaded{issue}
@@ -97,7 +97,7 @@ func LoadNotificationLabels(n *github.Notification, issue *github.Issue) tea.Cmd
 
 		labels, err := getIssueLabels(ctx, n, issue.GetNumber())
 		if err != nil {
-			return err
+			return fmt.Errorf("fetching issue labels: %w", err)
 		}
 
 		return NotificationLabelsLoaded{labels}
@@ -112,7 +112,7 @@ func LoadNotificationComments(issue *github.Issue) tea.Cmd {
 
 		comments, err := getIssueComments(ctx, issue)
 		if err != nil {
-			return err
+			return fmt.Errorf("fetching issue comments: %w", err)
 		}
 
 		return NotificationCommentsLoaded{comments}
@@ -130,7 +130,7 @@ func LoadRepoLabels(n *github.Notification) tea.Cmd {
 		owner, repo := ownerRepo(n)
 		labels, _, err := gh.Issues.ListLabels(ctx, owner, repo, nil)
 		if err != nil {
-			return err
+			return fmt.Errorf("fetching repo labels: %w", err)
 		}
 
 		return LabelsLoaded{labels}
@@ -150,12 +150,12 @@ func UpdateNotificationLabels(n *github.Notification, issue *github.Issue, label
 		if len(labels) == 0 {
 			_, err := gh.Issues.RemoveLabelsForIssue(ctx, owner, repo, issue.GetNumber())
 			if err != nil {
-				return err
+				return fmt.Errorf("removing labels: %w", err)
 			}
 		} else {
 			_, _, err := gh.Issues.ReplaceLabelsForIssue(ctx, owner, repo, issue.GetNumber(), labels)
 			if err != nil {
-				return err
+				return fmt.Errorf("replacing labels: %w", err)
 			}
 		}
 
@@ -231,7 +231,7 @@ func AddComment(n *github.Notification, issue *github.Issue, comment string) tea
 		})
 
 		if err != nil {
-			return err
+			return fmt.Errorf("creating comment: %w", err)
 		}
 
 		return CommentAdded{}
@@ -248,7 +248,7 @@ func MarkAsRead(n *github.Notification) tea.Cmd {
 
 		_, err := gh.Activity.MarkThreadRead(ctx, n.GetID())
 		if err != nil {
-			return err
+			return fmt.Errorf("marking thread as read: %w", err)
 		}
 
 		return MarkedAsRead{n}
@@ -265,12 +265,12 @@ func Unsubscribe(n *github.Notification) tea.Cmd {
 
 		_, err := gh.Activity.DeleteThreadSubscription(ctx, n.GetID())
 		if err != nil {
-			return err
+			return fmt.Errorf("removing thread subscription: %w", err)
 		}
 
 		_, err = gh.Activity.MarkThreadRead(ctx, n.GetID())
 		if err != nil {
-			return err
+			return fmt.Errorf("marking thread as read: %w", err)
 		}
 
 		return Unsubscribed{n}
@@ -287,7 +287,7 @@ func Unwatch(owner, repo string) tea.Cmd {
 
 		_, err := gh.Activity.DeleteRepositorySubscription(ctx, owner, repo)
 		if err != nil {
-			return err
+			return fmt.Errorf("unwatching repository: %w", err)
 		}
 
 		return Unwatched{
@@ -315,7 +315,7 @@ func OpenInBrowser(n *github.Notification) tea.Cmd {
 		var v github.Issue
 		_, err = gh.Do(ctx, req, &v)
 		if err != nil {
-			return err
+			return fmt.Errorf("fetching issue url: %w", err)
 		}
 
 		return browser.OpenURL(v.GetHTMLURL())
