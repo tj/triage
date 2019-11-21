@@ -71,4 +71,11 @@ func main() {
 	if err != nil {
 		log.Fatalf("error: %s\r\n", err)
 	}
+
+	clear()
+}
+
+// clear the screen.
+func clear() {
+	fmt.Printf("\033[2J\033[3J\033[1;1H")
 }
