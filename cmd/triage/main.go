@@ -19,17 +19,22 @@ var defaultPriorities = []triage.Priority{
 	{
 		Name:  "Low",
 		Label: "Priority: Low",
-		Color: "#532BE3",
+		Color: "#b197fc",
 	},
 	{
-		Name:  "Medium",
-		Label: "Priority: Medium",
-		Color: "#532BE3",
+		Name:  "Normal",
+		Label: "Priority: Normal",
+		Color: "#845ef7",
 	},
 	{
-		Name:  "High",
-		Label: "Priority: High",
-		Color: "#532BE3",
+		Name:  "Important",
+		Label: "Priority: Important",
+		Color: "#7048e8",
+	},
+	{
+		Name:  "Critical",
+		Label: "Priority: Critical",
+		Color: "#5f3dc4",
 	},
 }
 
