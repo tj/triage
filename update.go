@@ -276,6 +276,9 @@ func Update(ctx context.Context, msg tea.Msg, model tea.Model) (tea.Model, tea.C
 			m.Loading = false
 			return m, nil
 		case *terminput.KeyboardInput:
+			if len(notifications) == 0 {
+				return m, tea.Quit
+			}
 			switch msg.Key() {
 			case terminput.KeyUp:
 				if m.Selected > 0 {
