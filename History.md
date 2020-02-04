@@ -1,4 +1,9 @@
 
+v0.1.1 / 2020-02-04
+===================
+
+  * fix panic from user input when no notifications are present. Closes #18
+
 v0.1.0 / 2020-01-08
 ===================
 
