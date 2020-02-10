@@ -23,10 +23,10 @@ Upcoming features may include things like:
 
 ## Installation
 
-Via `go get`:
+Via [gobinaries.com](https://gobinaries.com):
 
-```
-$ GO111MODULE=on go get github.com/tj/triage/cmd/triage@master
+```sh
+$ curl -sf https://gobinaries.com/tj/triage/cmd/triage | sh
 ```
 
 Via `ops run` by [CTO.ai](https://cto.ai/):
